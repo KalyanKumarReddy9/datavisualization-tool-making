@@ -135,17 +135,35 @@ function removeVisualization(id) {
 
 function updateChart() {
     if (!selectedVisualization) return;
-    
-    updateVisualization(selectedVisualization, {
-        type: selectedVisualization.split('-')[0],
-        x_column: document.getElementById('xAxis').value,
-        y_column: document.getElementById('yAxis').value,
-        title: document.getElementById('chartTitle').value,
-        hue: document.getElementById('hueColumn').value
-    });
-}
-
-function updateVisualization(id, config) {
+  
+    const config = {
+      type: selectedVisualization.split('-')[0],
+      x_column: document.getElementById('xAxis').value,
+      y_column: document.getElementById('yAxis').value,
+      title: document.getElementById('chartTitle').value,
+      hue: document.getElementById('hueColumn').value || null,
+      categoryFilter: document.getElementById('categoryFilter').value || null,
+      regionFilter: document.getElementById('regionFilter').value || null
+    };
+  
+    fetch('/api/chart', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config)
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.image) {
+        document.getElementById(selectedVisualization).src =
+          `data:image/png;base64,${data.image}`;
+      } else {
+        alert(data.error || 'Chart error');
+      }
+    })
+    .catch(console.error);
+  }
+  document.addEventListener('DOMContentLoaded', loadFilters);
+function updateVisualization(chartId, config) {
     fetch('/api/chart', {
         method: 'POST',
         headers: {
@@ -155,16 +173,20 @@ function updateVisualization(id, config) {
     })
     .then(response => response.json())
     .then(data => {
-        const card = document.getElementById(id);
-        if (card) {
-            const img = card.querySelector('img');
-            img.src = `data:image/png;base64,${data.image}`;
-            
-            const title = card.querySelector('h3');
-            title.textContent = config.title;
+        if (data.image) {
+            const chartContainer = document.getElementById('visualizations');
+            chartContainer.innerHTML = `
+                <img src="data:image/png;base64,${data.image}" alt="${config.title}" class="chart-image" />
+            `;
+        } else if (data.error) {
+            alert("Error: " + data.error);
         }
+    })
+    .catch(error => {
+        console.error("Chart rendering failed:", error);
     });
 }
+
 
 function applyFilters() {
     const category = document.getElementById('categoryFilter').value;
