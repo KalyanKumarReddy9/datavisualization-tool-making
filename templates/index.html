@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Visualization Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Data Visualization Dashboard</h1>
+            <div class="upload-section">
+                <input type="file" id="datasetUpload" accept=".csv" class="file-input">
+                <button onclick="uploadDataset()" class="upload-button">Upload Dataset</button>
+            </div>
+        </header>
+        
+        <div class="dashboard-layout">
+            <aside class="sidebar">
+                <div class="visualization-tools">
+                    <h2>Visualizations</h2>
+                    <button onclick="addVisualization('bar')" class="tool-button">
+                        <span class="icon">📊</span>
+                        Bar Chart
+                    </button>
+                    <button onclick="addVisualization('line')" class="tool-button">
+                        <span class="icon">📈</span>
+                        Line Chart
+                    </button>
+                    <button onclick="addVisualization('pie')" class="tool-button">
+                        <span class="icon">🥧</span>
+                        Pie Chart
+                    </button>
+                    <button onclick="addVisualization('scatter')" class="tool-button">
+                        <span class="icon">📍</span>
+                        Scatter Plot
+                    </button>
+                    <button onclick="addVisualization('box')" class="tool-button">
+                        <span class="icon">📦</span>
+                        Box Plot
+                    </button>
+                    <button onclick="addVisualization('violin')" class="tool-button">
+                        <span class="icon">🎻</span>
+                        Violin Plot
+                    </button>
+                    <button onclick="addVisualization('heatmap')" class="tool-button">
+                        <span class="icon">🌡️</span>
+                        Heatmap
+                    </button>
+                    <button onclick="addVisualization('histogram')" class="tool-button">
+                        <span class="icon">📊</span>
+                        Histogram
+                    </button>
+                    <button onclick="addVisualization('kde')" class="tool-button">
+                        <span class="icon">📉</span>
+                        Density Plot
+                    </button>
+                </div>
+
+                <div class="data-filters">
+                    <h2>Filters</h2>
+                    <div class="filter-group">
+                        <label for="categoryFilter">Category:</label>
+                        <select id="categoryFilter" onchange="applyFilters()">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="regionFilter">Region:</label>
+                        <select id="regionFilter" onchange="applyFilters()">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="content">
+                <div id="visualizations" class="visualizations-grid"></div>
+            </main>
+
+            <aside class="properties-panel" id="propertiesPanel">
+                <h2>Properties</h2>
+                <div class="properties-content">
+                    <div class="property-group">
+                        <label for="chartTitle">Title:</label>
+                        <input type="text" id="chartTitle" value="New Chart">
+                    </div>
+                    <div class="property-group">
+                        <label for="xAxis">X Axis:</label>
+                        <select id="xAxis"></select>
+                    </div>
+                    <div class="property-group">
+                        <label for="yAxis">Y Axis:</label>
+                        <select id="yAxis"></select>
+                    </div>
+                    <div class="property-group">
+                        <label for="hueColumn">Group By (Color):</label>
+                        <select id="hueColumn">
+                            <option value="">None</option>
+                        </select>
+                    </div>
+                    <button onclick="updateChart()" class="update-button">Update Chart</button>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
